@@ -78,9 +78,6 @@ streamyy/
 ### Friends Page
 ![Friends](frontend/public/friends.png)
 
-### Authentication
-![Auth](frontend/public/authentication.png)
-
 ### Notifications Page
 ![Notifications](frontend/public/notifications.png)
 
