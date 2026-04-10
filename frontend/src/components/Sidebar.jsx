@@ -1,11 +1,14 @@
 import { Link, useLocation } from "react-router";
 import useAuthUser from "../hooks/useAuthUser";
 import { Aperture, BellIcon, HomeIcon, ShipWheelIcon, UsersIcon } from "lucide-react";
+import useFriendRequests from "../hooks/useFriendRequests";
 
 const Sidebar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const currentPath = location.pathname;
+
+  const { incomingCount } = useFriendRequests();
 
   return (
     <aside className="w-64 bg-base-200 border-r border-base-300 hidden lg:flex flex-col h-screen sticky top-0">
@@ -45,7 +48,14 @@ const Sidebar = () => {
             currentPath === "/notifications" ? "btn-active" : ""
           }`}
         >
-          <BellIcon className="size-5 text-base-content opacity-70" />
+          <div className="relative">
+            <BellIcon className="size-5 text-base-content opacity-70" />
+            {incomingCount > 0 && (
+              <span className="absolute -top-1.5 -right-1.5 size-4 bg-primary text-primary-content text-[10px] font-bold rounded-full flex items-center justify-center">
+                {incomingCount}
+              </span>
+            )}
+          </div>
           <span>Notifications</span>
         </Link>
       </nav>

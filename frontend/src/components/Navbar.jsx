@@ -3,19 +3,15 @@ import useAuthUser from "../hooks/useAuthUser";
 import { Aperture, BellIcon, LogOutIcon, ShipWheelIcon } from "lucide-react";
 import ThemeSelector from "./ThemeSelector";
 import useLogout from "../hooks/useLogout";
+import useFriendRequests from "../hooks/useFriendRequests";
 
 const Navbar = () => {
   const { authUser } = useAuthUser();
   const location = useLocation();
   const isChatPage = location.pathname?.startsWith("/chat");
 
-  // const queryClient = useQueryClient();
-  // const { mutate: logoutMutation } = useMutation({
-  //   mutationFn: logout,
-  //   onSuccess: () => queryClient.invalidateQueries({ queryKey: ["authUser"] }),
-  // });
-
   const { logoutMutation } = useLogout();
+  const { incomingCount } = useFriendRequests();
 
   return (
     <nav className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center">
@@ -35,8 +31,13 @@ const Navbar = () => {
 
           <div className="flex items-center gap-3 sm:gap-4 ml-auto">
             <Link to={"/notifications"}>
-              <button className="btn btn-ghost btn-circle">
+              <button className="btn btn-ghost btn-circle relative">
                 <BellIcon className="h-6 w-6 text-base-content opacity-70" />
+                {incomingCount > 0 && (
+                  <span className="absolute top-1.5 right-1.5 size-5 bg-primary text-primary-content text-[11px] font-bold rounded-full flex items-center justify-center border-2 border-base-200">
+                    {incomingCount}
+                  </span>
+                )}
               </button>
             </Link>
           </div>
