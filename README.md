@@ -64,6 +64,31 @@ streamyy/
 
 ---
 
+##  Screenshots 
+
+### Login Page
+![Login](frontend/public/login.png)
+
+### SignUp Page
+![SignUp](frontend/public/signup.png)
+
+### Landing Page
+![Landing](frontend/public/dashboard.png)
+
+### Friends Page
+![Friends](frontend/public/friends.png)
+
+### Authentication
+![Auth](frontend/public/authentication.png)
+
+### Notifications Page
+![Notifications](frontend/public/notifications.png)
+
+### Chats Page
+![Chat](frontend/public/chats.png)
+
+---
+
 ## ⚙️ Setup & Installation
 
 ### Prerequisites
@@ -73,7 +98,7 @@ streamyy/
 
 ### 1. Clone & Install
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/ishwari-03/streamyy.git
 cd streamyy
 npm install
 cd backend && npm install
@@ -106,13 +131,6 @@ From the root directory:
 - Terminal 1: `cd backend && npm run dev`
 - Terminal 2: `cd frontend && npm run dev`
 
-**Production:**
-```bash
-npm run build
-npm run start
 ```
 
----
 
-## 📄 License
-This project is licensed under the [ISC License](LICENSE).
