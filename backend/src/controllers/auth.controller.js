@@ -79,8 +79,8 @@ export async function signup(req, res) {
     // 7️⃣ Set cookie
     res.cookie("jwt", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true, // Required for sameSite: "none"
+      sameSite: "none", // Allowed cross-site (Vercel -> Render)
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
@@ -123,8 +123,8 @@ if (!isPasswordCorrect) {
     // 7️⃣ Set cookie
     res.cookie("jwt", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: true, // Required for sameSite: "none"
+      sameSite: "none", // Allowed cross-site (Vercel -> Render)
       maxAge: 7 * 24 * 60 * 60 * 1000,
     });
    res.status(200).json({ success: true, user });
