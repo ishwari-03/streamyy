@@ -63,6 +63,30 @@ streamyy/
 ```
 
 ---
+##  Screenshots 
+
+### Login Page
+![Login](frontend/public/login.png)
+
+### SignUp Page
+![SignUp](frontend/public/signup.png)
+
+### Landing Page
+![Landing](frontend/public/dashboard.png)
+
+### Friends Page
+![Friends](frontend/public/friends.png)
+
+### Authentication
+![Auth](frontend/public/authentication.png)
+
+### Notifications Page
+![Notifications](frontend/public/notifications.png)
+
+### Chats Page
+![Chat](frontend/public/chats.png)
+
+---
 
 ## ⚙️ Setup & Installation
 
