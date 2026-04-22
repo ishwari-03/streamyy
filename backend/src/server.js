@@ -17,9 +17,11 @@ const PORT=process.env.PORT;
 const __dirname = path.resolve();
 
 app.use(cors({
-    origin: process.env.NODE_ENV === "production" 
-        ? process.env.FRONTEND_URL 
-        : "http://localhost:5173",
+    origin: [
+        "http://localhost:5173",
+        "https://streamyy-ni4b.vercel.app",
+        "https://streamyy.onrender.com"
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
