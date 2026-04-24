@@ -1,11 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { acceptFriendRequest, getFriendRequests } from "../lib/api";
-import { BellIcon, ClockIcon, MessageSquareIcon, UserCheckIcon } from "lucide-react";
+import { BellIcon, ClockIcon, MessageSquareIcon, UserCheckIcon, SendIcon } from "lucide-react";
 import NoNotificationsFound from "../components/NoNotificationsFound";
 import { capitialize } from "../lib/utils";
+import { useChatNotificationsStore } from "../store/useChatNotificationsStore";
+import { Link } from "react-router";
 
 const NotificationsPage = () => {
   const queryClient = useQueryClient();
+  const { unreadMessages } = useChatNotificationsStore();
 
   const { data: friendRequests, isLoading } = useQuery({
     queryKey: ["friendRequests"],
@@ -23,10 +26,18 @@ const NotificationsPage = () => {
   const incomingRequests = friendRequests?.incomingReqs || [];
   const acceptedRequests = friendRequests?.acceptedReqs || [];
 
+  const totalNotifications = incomingRequests.length + unreadMessages.length;
+  const hasNotifications = incomingRequests.length > 0 || acceptedRequests.length > 0 || unreadMessages.length > 0;
+
   return (
     <div className="p-4 sm:p-6 lg:p-8">
       <div className="container mx-auto max-w-4xl space-y-8">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6">Notifications</h1>
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight mb-6 flex items-center gap-3">
+          Notifications
+          {totalNotifications > 0 && (
+            <span className="badge badge-primary badge-lg">{totalNotifications}</span>
+          )}
+        </h1>
 
         {isLoading ? (
           <div className="flex justify-center py-12">
@@ -34,6 +45,56 @@ const NotificationsPage = () => {
           </div>
         ) : (
           <>
+            {/* CHAT MESSAGES SECTION */}
+            {unreadMessages.length > 0 && (
+              <section className="space-y-4">
+                <h2 className="text-xl font-semibold flex items-center gap-2">
+                  <MessageSquareIcon className="h-5 w-5 text-secondary" />
+                  New Messages
+                  <span className="badge badge-secondary ml-2">{unreadMessages.length}</span>
+                </h2>
+
+                <div className="space-y-3">
+                  {unreadMessages.map((msg) => (
+                    <div
+                      key={msg.id}
+                      className="card bg-base-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+                    >
+                      <div className="absolute left-0 top-0 h-full w-1 bg-secondary"></div>
+                      <div className="card-body p-4">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 overflow-hidden">
+                            <div className="avatar size-12">
+                              <div className="rounded-full ring ring-secondary ring-offset-base-100 ring-offset-1">
+                                <img
+                                  src={msg.user.image || `https://api.dicebear.com/7.x/adventurer/svg?seed=${msg.user.name || "user"}`}
+                                  alt={msg.user.name}
+                                />
+                              </div>
+                            </div>
+                            <div className="overflow-hidden">
+                              <h3 className="font-semibold truncate">{msg.user.name}</h3>
+                              <p className="text-sm opacity-70 truncate max-w-xs sm:max-w-md">
+                                {msg.text}
+                              </p>
+                            </div>
+                          </div>
+
+                          <Link 
+                            to={`/chat/${msg.user.id}`} 
+                            className="btn btn-secondary btn-sm"
+                          >
+                            Reply
+                            <SendIcon className="size-3 ml-1" />
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {incomingRequests.length > 0 && (
               <section className="space-y-4">
                 <h2 className="text-xl font-semibold flex items-center gap-2">
@@ -53,25 +114,18 @@ const NotificationsPage = () => {
                           <div className="flex items-center gap-3">
                             <div className="avatar w-14 h-14 rounded-full bg-base-300">
                               <img
-  src={
-    request.sender.profilePic ||
-    request.sender.profilepic ||
-    `https://api.dicebear.com/7.x/adventurer/svg?seed=${
-      request.sender.fullname ||
-      request.sender.fullname ||
-      "user"
-    }`
-  }
-  alt={request.sender.fullname || "User avatar"}
-/>
-
+                                src={
+                                  request.sender.profilePic ||
+                                  request.sender.profilepic ||
+                                  `https://api.dicebear.com/7.x/adventurer/svg?seed=${request.sender.fullname || "user"}`
+                                }
+                                alt={request.sender.fullname || "User avatar"}
+                              />
                             </div>
                             <div>
                               <h3 className="font-semibold">
-  {request.sender.fullName ||
-   request.sender.fullname ||
-   "Unknown User"}
-</h3>
+                                {request.sender.fullName || request.sender.fullname || "Unknown User"}
+                              </h3>
 
                               <div className="flex flex-wrap gap-1.5 mt-1">
                                 <span className="badge badge-primary badge-outline px-3 py-2 text-xs font-medium flex items-center gap-1">
@@ -83,8 +137,6 @@ const NotificationsPage = () => {
                               </div>
                             </div>
                           </div>
-
-
 
                           <button
                             className="btn btn-primary btn-sm"
@@ -115,28 +167,22 @@ const NotificationsPage = () => {
                       <div className="card-body p-4">
                         <div className="flex items-start gap-3">
                           <div className="avatar mt-1 size-10">
-  <div className="rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
-    <img
-      src={
-        notification?.recipient?.profilePic ||
-        `https://api.dicebear.com/7.x/adventurer/svg?seed=${
-          notification?.recipient?.fullName ||
-          notification?.recipient?.fullname ||
-          "user"
-        }`
-      }
-      alt={notification?.recipient?.fullName || "User avatar"}
-    />
-  </div>
-</div>
+                            <div className="rounded-full ring ring-primary ring-offset-base-100 ring-offset-1">
+                              <img
+                                src={
+                                  notification?.recipient?.profilePic ||
+                                  `https://api.dicebear.com/7.x/adventurer/svg?seed=${notification?.recipient?.fullName || "user"}`
+                                }
+                                alt={notification?.recipient?.fullName || "User avatar"}
+                              />
+                            </div>
+                          </div>
 
                           <div className="flex-1">
                             <h3 className="font-semibold">{notification.recipient.fullName}</h3>
                             <p className="text-sm my-1">
-  {(notification.recipient?.fullName ||
-    notification.recipient?.fullname ||
-    "Someone")} accepted your friend request
-</p>
+                              {(notification.recipient?.fullName || notification.recipient?.fullname || "Someone")} accepted your friend request
+                            </p>
 
                             <p className="text-xs flex items-center opacity-70">
                               <ClockIcon className="h-3 w-3 mr-1" />
@@ -155,7 +201,7 @@ const NotificationsPage = () => {
               </section>
             )}
 
-            {incomingRequests.length === 0 && acceptedRequests.length === 0 && (
+            {!hasNotifications && (
               <NoNotificationsFound />
             )}
           </>

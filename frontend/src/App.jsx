@@ -16,9 +16,14 @@ import useAuthUser from "./hooks/useAuthUser.js";
 import Layout from "./components/Layout.jsx";
 import { useThemeStore } from "./store/useThemeStore.js";
 
+import { useGlobalChat } from "./hooks/useGlobalChat";
+
 const App = () => {
   const { isLoading, authUser } = useAuthUser();
   const { theme } = useThemeStore();
+  
+  // Call the global chat hook
+  useGlobalChat();
 
   const isAuthenticated = Boolean(authUser);
   const isOnboarded = authUser?.isOnboarded;
@@ -26,7 +31,7 @@ const App = () => {
   if (isLoading) return <PageLoader />;
 
   return (
-    <div className="h-screen" data-theme={theme}>
+    <div className="min-h-screen bg-base-100 text-base-content" data-theme={theme}>
       <Routes>
 
         {/* ✅ DEFAULT ENTRY POINT */}

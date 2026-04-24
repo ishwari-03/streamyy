@@ -3,14 +3,15 @@
 @tailwind utilities;
 
 .str-chat__channel {
+  @apply bg-base-200;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(to bottom, #c9e8c9, #b7e7bb);
   height: 100%;
 }
 
 .str-chat__container {
+  @apply bg-base-100;
   max-width: 1200px;
   width: 100%;
   height: 80% !important;
@@ -21,12 +22,12 @@
 }
 
 .str-chat__list {
-  background-color: #ffffff;
+  background-color: transparent !important;
   padding: 12px;
 }
 
 .str-chat__list-notifications {
-  display: none;
+  /* Restored default notifications for stream chat */
 }
 
 .str-chat__message-input {

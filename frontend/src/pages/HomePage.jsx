@@ -12,6 +12,8 @@ import { CheckCircleIcon, MapPinIcon, UserPlusIcon, UsersIcon } from "lucide-rea
 
 import { capitialize } from "../lib/utils";
 import useAuthUser from "../hooks/useAuthUser";
+import useFriendRequests from "../hooks/useFriendRequests";
+import { useChatNotificationsStore } from "../store/useChatNotificationsStore";
 
 import FriendCard from "../components/FriendCard";
 import NoFriendsFound from "../components/NoFriendsFound";
@@ -34,12 +36,15 @@ const HomePage = () => {
     queryFn: getOutgoingFriendReqs,
   });
 
-  const { mutate: sendRequestMutation, isPending } = useMutation({
+  const { mutate: sendRequestMutation, isPending, variables: pendingUserId } = useMutation({
     mutationFn: sendFriendRequest,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["outgoingFriendReqs"] }),
   });
 
   const { authUser, isLoading: loadingAuthUser } = useAuthUser();
+  const { incomingCount } = useFriendRequests();
+  const { unreadCount } = useChatNotificationsStore();
+  const totalNotifications = incomingCount + unreadCount;
 
   const outgoingRequestsIds = new Set();
   if (Array.isArray(outgoingFriendReqs)) {
@@ -113,9 +118,17 @@ const HomePage = () => {
 
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">Your Friends</h2>
-          <Link to="/notifications" className="btn btn-outline btn-sm">
-            <UsersIcon className="mr-2 size-4" />
+          <Link to="/notifications" className="btn btn-outline btn-sm gap-2">
+            <div className="relative">
+              <UsersIcon className="size-4" />
+              {totalNotifications > 0 && (
+                <span className="absolute -top-2 -right-2 size-3 bg-primary rounded-full"></span>
+              )}
+            </div>
             Friend Requests
+            {totalNotifications > 0 && (
+              <span className="badge badge-primary badge-sm ml-1">{totalNotifications}</span>
+            )}
           </Link>
         </div>
 
@@ -218,7 +231,7 @@ const HomePage = () => {
                           hasRequestBeenSent ? "btn-disabled" : "btn-primary"
                         } `}
                         onClick={() => sendRequestMutation(user._id)}
-                        disabled={hasRequestBeenSent || isPending}
+                        disabled={hasRequestBeenSent || (isPending && pendingUserId === user._id)}
                       >
                         {hasRequestBeenSent ? (
                           <>
